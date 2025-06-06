@@ -1,0 +1,13 @@
+# chs_backend/.dockerignore
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.vscode/
+.git/
+.gitignore
+.env
+.DS_Store
