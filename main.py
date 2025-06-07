@@ -4,8 +4,12 @@ from fastapi import FastAPI
 from app.routes import router
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from app.models import Base
+from app.database import engine
+
 
 load_dotenv()
+
 app = FastAPI()
 app.include_router(router)
 origins = ["*"]
@@ -18,7 +22,6 @@ app.add_middleware(
         "*"
     ],  # Allows all headers (including Content-Type, Authorization, etc.)
 )
-
 
 
 @app.get("/")
@@ -39,3 +42,8 @@ async def get_config_test():
         "claude_key_status": "Loaded" if os.getenv("CLAUDE_KEY") else "Not Loaded",
         "claude_key_first_chars": os.getenv("CLAUDE_KEY")[:5] + "..." if os.getenv("CLAUDE_KEY") else "N/A"
     }
+
+@app.get("/migrate")
+async def migrate_endpoint():
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
